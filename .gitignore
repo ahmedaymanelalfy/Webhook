@@ -1,0 +1,75 @@
+# .NET Core files
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.cache
+*.log
+*.user
+*.lock.json
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# NuGet Packages
+*.nupkg
+# The packages folder can be ignored because of the use of PackageReference
+# in project files (NuGet 4.0+)
+**/packages/*
+!**/packages/build/
+# Uncomment if necessary however generally it will be regenerated when needed
+#!**/packages/repositories.config
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mono Auto Generated Files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# OSX files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDEs and editors
+## Rider
+.idea/
+*.sln.iml
+
+## Visual Studio Code
+.vscode/
+
+## Visual Studio for Mac
+.vscode/
+*.csproj.user
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Files built by Visual Studio
+.vscode/
+.vs/
+
+# Uncomment if you have secrets in your appsettings files
+# appsettings.json
+# appsettings.Development.json
