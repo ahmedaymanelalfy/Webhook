@@ -10,7 +10,7 @@ public class NotificationsController(TravelAgentDbContext context) : ControllerB
     [HttpPost]
     public ActionResult FlightChanged(FlightDetailUpdateDto flightDetailUpdateDto)
     {
-        Console.WriteLine($"Webhook Receieved from: {flightDetailUpdateDto.Publisher}");
+        Console.WriteLine($"Webhook Received from: {flightDetailUpdateDto.Publisher}");
 
         var secretModel = context.SubscriptionSecrets.FirstOrDefault(s => 
             s.Publisher == flightDetailUpdateDto.Publisher && 
@@ -19,7 +19,7 @@ public class NotificationsController(TravelAgentDbContext context) : ControllerB
         if (secretModel == null)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Invalid Secret - Ignore Webwook");
+            Console.WriteLine("Invalid Secret - Ignore Webhook");
             Console.ResetColor();
             return Ok();
         }

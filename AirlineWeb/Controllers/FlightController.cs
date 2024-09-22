@@ -1,5 +1,6 @@
 using AirlineWeb.Data;
 using AirlineWeb.Dtos;
+using AirlineWeb.MessageBus;
 using AirlineWeb.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,7 @@ namespace AirlineWeb.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class FlightController(AirlineDbContext context, IMapper mapper) : ControllerBase
+public class FlightController(AirlineDbContext context, IMapper mapper, IMessageBus messageBus) : ControllerBase
 {
     [HttpGet("{flightCode}", Name = "get-flight-details-by-code")]
     public async Task<ActionResult<FlightDetailsReadDto>> GetSubscriptionBySecret(string flightCode)
@@ -48,7 +49,7 @@ public class FlightController(AirlineDbContext context, IMapper mapper) : Contro
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<FlightDetailsReadDto>> UpdateFlight( int id , 
+    public async Task<ActionResult<FlightDetailsReadDto>> UpdateFlight(int id,
         [FromBody] FlightDetailsUpdateDto flightDetailsUpdateDto)
     {
         var flightDetails =
@@ -56,11 +57,35 @@ public class FlightController(AirlineDbContext context, IMapper mapper) : Contro
                 x.Id == id);
         if (flightDetails is null)
             return NotFound();
-        
-        mapper.Map(flightDetailsUpdateDto,flightDetails);
+        decimal oldPrice = flightDetails.Price;
+        mapper.Map(flightDetailsUpdateDto, flightDetails);
         context.FlightDetails.Update(flightDetails);
         await context.SaveChangesAsync();
-        
-        return  mapper.Map<FlightDetailsReadDto>(flightDetails);
+        try
+        {
+            if (oldPrice != flightDetails.Price)
+            {
+                Console.WriteLine("price Change - Place message on bus");
+                var message = new NotificationMessageDto
+                {
+                    WebhookType = "PriceChange",
+                    OldPrice = oldPrice,
+                    NewPrice = flightDetails.Price,
+                    FlightCode = flightDetails.FlightCode
+                };
+
+                messageBus.SendMessage(message);
+            }
+            else
+            {
+                Console.WriteLine("No price Change ");
+            }
+
+            return mapper.Map<FlightDetailsReadDto>(flightDetails);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
     }
 }
