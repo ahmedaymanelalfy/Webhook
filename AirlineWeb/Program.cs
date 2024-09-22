@@ -23,11 +23,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Air Line Web");
-        c.RoutePrefix = string.Empty;  // Makes Swagger UI available at the root (http://localhost:5018)
+        c.RoutePrefix = "swagger";
     });
 }
 app.MapControllers();
+// Serve static files from wwwroot
+app.UseStaticFiles();
 
+// Enable serving of default files like index.html
+app.UseDefaultFiles();
 app.UseHttpsRedirection();
 app.Run();
 
